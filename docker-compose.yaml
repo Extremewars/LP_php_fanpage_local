@@ -1,0 +1,28 @@
+version: '3.8'
+
+services: 
+  app:
+    container_name: client_server
+    build:  
+      dockerfile: website/Dockerfile
+      context: . 
+    ports:
+      - "8000:80"
+    volumes:
+      - ./website:/var/www/html
+    depends_on:
+      - db
+  db: 
+    container_name: database_server
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: linkin_park_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:  
+      - "3306:3306"
+    volumes:
+      - ./db/linkin_park_db.sql:/docker-entrypoint-initdb.d/linkin_park_db.sql 
